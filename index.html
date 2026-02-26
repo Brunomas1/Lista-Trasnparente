@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aumento de Impostos 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="icon" type="image/png" href="https://www.gov.br/planalto/pt-br/conheca-a-presidencia/biblioteca-da-pr/simbolos-nacionais/bandeira/bandeiragrande.jpg/@@images/image.jpeg">
+    <style>
+        /* ESTILO ORIGINAL NOTA 10 PRESERVADO */
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .header-section { background: linear-gradient(135deg, #003366 0%, #00509d 100%); color: white; padding: 40px 0; margin-bottom: 30px; }
+        .search-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: -50px; position: relative; z-index: 10; }
+        .nav-pills .nav-link { color: #003366; font-weight: 500; margin-right: 5px; border: 1px solid transparent; }
+        .nav-pills .nav-link.active { background-color: #003366; color: white; }
+        .ncm-code { font-family: monospace; color: #6c757d; font-size: 0.9rem; font-weight: bold; }
+        .product-title { color: #003366; font-weight: 700; font-size: 1rem; display: block; margin-bottom: 2px; text-transform: uppercase; }
+        .aliq-badge { font-size: 0.85rem; padding: 5px 10px; border-radius: 20px; }
+        .table-responsive { border-radius: 12px; overflow: hidden; background: white; }
+        .sticky-tabs { position: sticky; top: 0; background: #f4f7f6; z-index: 100; padding: 15px 0; }
+        .category-title { border-left: 5px solid #003366; padding-left: 15px; margin: 30px 0 20px; color: #003366; }
+        .official-link { color: #ffc107; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        .official-link:hover { text-decoration: underline; color: white; }
+        .info-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 15px; margin-top: 15px; text-align: left; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="header-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Aumento de Impostos 2026</h1>
+            <p class="lead">O Governo aumentou o imposto de mais de 1.200 produtos (Máquinas e Tecnologia)</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-9">
+                    <div class="info-box">
+                        <i class="bi bi-info-circle-fill text-warning"></i> <strong>Entenda o aumento:</strong> 
+                        Itens que antes tinham imposto zero agora passam a pagar 7%, 12,6% ou 20%. 
+                        A medida visa favorecer o produto nacional e afeta máquinas, eletrônicos e peças de informática.
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="https://portalunico.siscomex.gov.br/classif/#/sumario?perfil=publico" target="_blank" class="official-link"><i class="bi bi-box-arrow-up-right"></i> Consulta Oficial do NCM</a>
+                <a href="https://www.gov.br/receitafederal" target="_blank" class="official-link"><i class="bi bi-bank"></i> Fonte: Receita Federal</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-container mb-4">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="globalSearch" class="form-control border-start-0" placeholder="Digite o nome do produto (ex: monitor, freezer, motor...)">
+            </div>
+        </div>
+
+        <div class="sticky-tabs">
+            <ul class="nav nav-pills justify-content-center" id="categoryTabs" role="tablist">
+                <li class="nav-item"><button class="nav-link active" onclick="showCategory('all')">Lista Geral</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="showCategory('Médico')">Saúde e Médicos</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="showCategory('TI')">Computadores e TI</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="showCategory('Telecom')">Celulares e Redes</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="showCategory('Industrial')">Máquinas e Equipamentos</button></li>
+                <li class="nav-item"><button class="nav-link" onclick="showCategory('Eletrônica')">Peças e Chips</button></li>
+            </ul>
+        </div>
+
+        <div id="mainContent"></div>
+    </div>
+
+    <footer class="py-5 mt-5 bg-white border-top text-center text-muted">
+        <p class="small">Todos os dados são públicos e foram extraídos do Gecex/Camex.</p>
+    </footer>
+
+    <script>
+        const TITULOS_CIDADAO = {
+            "8471": "Computadores, Laptops e Tablets",
+            "8473": "Peças e Placas para Computador",
+            "8443": "Impressoras e Copiadoras",
+            "8517": "Smartphones, Telefones e Antenas",
+            "8525": "Equipamentos de Rádio, TV e Satélite",
+            "8542": "Processadores e Chips Eletrônicos",
+            "8541": "Painéis LED e Componentes",
+            "9018": "Instrumentos Médicos e Cirúrgicos",
+            "9019": "Aparelhos de Massagem e Respiração",
+            "9022": "Máquinas de Raio-X",
+            "8419": "Esterilizadores e Máquinas Térmicas",
+            "8421": "Filtros e Purificadores de Água",
+            "9402": "Camas Médicas e Cadeiras de Dentista",
+            "8418": "Freezers e Geladeiras Industriais",
+            "8413": "Bombas e Motores de Água",
+            "8477": "Máquinas para Fabricar Plástico",
+            "8427": "Empilhadeiras e Carros de Carga",
+            "8701": "Tratores"
+        };
+
+        const NOMES_CATEGORIAS = {
+            "Médico": "Saúde e Médicos",
+            "TI": "Computadores e Tecnologia",
+            "Telecom": "Celulares e Redes",
+            "Industrial": "Máquinas e Equipamentos",
+            "Eletrônica": "Peças e Chips",
+            "Outros": "Diversos"
+        };
+
+        let fullData = [];
+
+        Papa.parse("data-D8jKS.csv", {
+            download: true, header: true, skipEmptyLines: true,
+            complete: function(results) {
+                fullData = results.data;
+                render();
+            }
+        });
+
+        function getCategory(item) {
+            const ncm = item['NCM*'] || "";
+            if (ncm.startsWith("9018") || ncm.startsWith("9019") || ncm.startsWith("9402")) return "Médico";
+            if (ncm.startsWith("8471") || ncm.startsWith("8473") || ncm.startsWith("8443.3")) return "TI";
+            if (ncm.startsWith("8517") || ncm.startsWith("8525")) return "Telecom";
+            if (ncm.startsWith("8541") || ncm.startsWith("8542")) return "Eletrônica";
+            if (ncm.startsWith("84")) return "Industrial";
+            return "Outros";
+        }
+
+        function render(term = "", catFilter = "all") {
+            const container = document.getElementById('mainContent');
+            container.innerHTML = "";
+            const categories = ["Médico", "TI", "Telecom", "Industrial", "Eletrônica", "Outros"];
+
+            categories.forEach(cat => {
+                if (catFilter !== "all" && catFilter !== cat) return;
+
+                const items = fullData.filter(i => {
+                    const matchCat = getCategory(i) === cat;
+                    const matchSearch = (i['Descrição'] + i['NCM*']).toLowerCase().includes(term.toLowerCase());
+                    return matchCat && matchSearch;
+                });
+
+                if (items.length === 0) return;
+
+                const section = document.createElement('div');
+                const displayName = NOMES_CATEGORIAS[cat] || cat;
+                
+                section.innerHTML = `
+                    <h2 class="category-title">${displayName} (${items.length})</h2>
+                    <div class="table-responsive shadow-sm mb-5">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 25%">Produto</th>
+                                    <th>Descrição do Governo</th>
+                                    <th class="text-center" style="width: 15%">Novo Imposto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.map(i => `
+                                    <tr>
+                                        <td>
+                                            <span class="product-title">${TITULOS_CIDADAO[i['NCM*'].substring(0,4)] || "DIVERSOS / MAQUINÁRIO"}</span>
+                                            <span class="ncm-code">Cód. NCM ${i['NCM*']}</span>
+                                        </td>
+                                        <td class="text-muted small">${i['Descrição']}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary-subtle text-primary aliq-badge">${i['Alíquota(%)']}%</span>
+                                            <div class="text-muted" style="font-size: 0.75rem; margin-top: 5px;">Aumento desde: ${i['Início de Vigência']}</div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        function showCategory(cat) {
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('onclick').includes(cat));
+            });
+            window.currentCat = cat;
+            render(document.getElementById('globalSearch').value, cat);
+        }
+
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            render(e.target.value, window.currentCat || "all");
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
